@@ -1,19 +1,20 @@
-# MongoDB Queries Documentation
+# MongoDB Documentation
 
-A comprehensive guide to MongoDB query operations, syntax, and examples.
+A comprehensive guide to MongoDB operations, including queries, aggregations, best practices, and examples.
 
 ## Table of Contents
 - [Basic Operations](#basic-operations)
-- [Query Operators](#query-operators)
+- [Query Operations](#query-operations)
 - [Update Operations](#update-operations)
-- [Aggregation Pipeline](#aggregation-pipeline)
+- [Aggregation Framework](#aggregation-framework)
 - [Indexing](#indexing)
-- [Advanced Queries](#advanced-queries)
+- [Performance Optimization](#performance-optimization)
+- [Advanced Features](#advanced-features)
+- [Best Practices](#best-practices)
 
 ## Basic Operations
 
 ### Insert Documents
-
 ```javascript
 // Insert a single document
 db.collection.insertOne({
@@ -30,7 +31,6 @@ db.collection.insertMany([
 ```
 
 ### Find Documents
-
 ```javascript
 // Find all documents
 db.collection.find({});
@@ -45,10 +45,9 @@ db.collection.findOne({ name: "John Doe" });
 db.collection.find({}, { name: 1, email: 1, _id: 0 });
 ```
 
-## Query Operators
+## Query Operations
 
 ### Comparison Operators
-
 ```javascript
 // Greater than
 db.collection.find({ age: { $gt: 25 } });
@@ -73,7 +72,6 @@ db.collection.find({ age: { $nin: [25, 30, 35] } });
 ```
 
 ### Logical Operators
-
 ```javascript
 // AND
 db.collection.find({
@@ -108,7 +106,6 @@ db.collection.find({
 ## Update Operations
 
 ### Update Documents
-
 ```javascript
 // Update one document
 db.collection.updateOne(
@@ -130,7 +127,6 @@ db.collection.replaceOne(
 ```
 
 ### Update Operators
-
 ```javascript
 // Increment value
 db.collection.updateOne(
@@ -150,196 +146,21 @@ db.collection.updateOne(
     { $unset: { temporary_field: "" } }
 );
 
-// Push to array
+// Array operations
 db.collection.updateOne(
     { name: "John Doe" },
     { $push: { hobbies: "reading" } }
 );
 
-// Pull from array
 db.collection.updateOne(
     { name: "John Doe" },
     { $pull: { hobbies: "reading" } }
 );
 ```
 
-## Aggregation Pipeline
+## Aggregation Framework
 
-```javascript
-db.collection.aggregate([
-    // Match stage
-    {
-        $match: {
-            age: { $gt: 25 }
-        }
-    },
-    // Group stage
-    {
-        $group: {
-            _id: "$status",
-            avgAge: { $avg: "$age" },
-            count: { $sum: 1 }
-        }
-    },
-    // Sort stage
-    {
-        $sort: {
-            avgAge: -1
-        }
-    }
-]);
-```
-
-## Indexing
-
-```javascript
-// Create single field index
-db.collection.createIndex({ name: 1 });
-
-// Create compound index
-db.collection.createIndex({ name: 1, age: -1 });
-
-// Create unique index
-db.collection.createIndex({ email: 1 }, { unique: true });
-
-// List all indexes
-db.collection.getIndexes();
-
-// Drop index
-db.collection.dropIndex("index_name");
-```
-
-## Advanced Queries
-
-### Text Search
-
-```javascript
-// Create text index
-db.collection.createIndex({ description: "text" });
-
-// Perform text search
-db.collection.find({
-    $text: {
-        $search: "mongodb database"
-    }
-});
-```
-
-### Geospatial Queries
-
-```javascript
-// Create 2dsphere index
-db.collection.createIndex({ location: "2dsphere" });
-
-// Find locations near a point
-db.collection.find({
-    location: {
-        $near: {
-            $geometry: {
-                type: "Point",
-                coordinates: [-73.9667, 40.78]
-            },
-            $maxDistance: 5000
-        }
-    }
-});
-```
-
-### Array Queries
-
-```javascript
-// Match array element
-db.collection.find({
-    tags: "mongodb"
-});
-
-// Match array element with condition
-db.collection.find({
-    scores: { $elemMatch: { $gt: 80, $lt: 90 } }
-});
-```
-
-## Best Practices
-
-1. Always use appropriate indexes for your queries
-2. Limit the number of documents returned using `.limit()`
-3. Use projection to return only necessary fields
-4. Use aggregation pipeline for complex data transformations
-5. Monitor query performance using `.explain()`
-6. Use appropriate data types for fields
-7. Consider document size limits (16MB per document)
-
-## Common Query Patterns
-
-### Pagination
-
-```javascript
-db.collection.find()
-    .skip(20)
-    .limit(10)
-    .sort({ _id: 1 });
-```
-
-### Distinct Values
-
-```javascript
-db.collection.distinct("status");
-```
-
-### Count Documents
-
-```javascript
-db.collection.countDocuments({ age: { $gt: 25 } });
-```
-
-## Error Handling
-
-Always wrap MongoDB operations in try-catch blocks:
-
-```javascript
-try {
-    await db.collection.insertOne({ name: "John Doe" });
-} catch (error) {
-    console.error("Error inserting document:", error);
-}
-```
-
-## Additional Resources
-
-- [MongoDB Official Documentation](https://docs.mongodb.com/)
-- [MongoDB Query Operators](https://docs.mongodb.com/manual/reference/operator/)
-- [MongoDB Aggregation Pipeline](https://docs.mongodb.com/manual/core/aggregation-pipeline/)
-- [MongoDB Index Types](https://docs.mongodb.com/manual/indexes/)
-
-
-
-
-# MongoDB Aggregation Framework Documentation
-
-A comprehensive guide to MongoDB's aggregation framework, stages, operators, and best practices.
-
-## Table of Contents
-- [Introduction](#introduction)
-- [Basic Syntax](#basic-syntax)
-- [Common Aggregation Stages](#common-aggregation-stages)
-- [Group Operations](#group-operations)
-- [Array Operations](#array-operations)
-- [Conditional Operations](#conditional-operations)
-- [Window Operations](#window-operations)
-- [Complex Examples](#complex-examples)
-- [Best Practices](#best-practices)
-- [Performance Optimization](#performance-optimization)
-
-## Introduction
-
-The MongoDB Aggregation Framework is a powerful tool for data processing and analysis that allows you to:
-- Transform and analyze data
-- Perform complex calculations
-- Reshape document structures
-- Create statistical reports
-
-## Basic Syntax
-
+### Basic Syntax
 ```javascript
 db.collection.aggregate([
     { stage1 },
@@ -349,10 +170,9 @@ db.collection.aggregate([
 ]);
 ```
 
-## Common Aggregation Stages
+### Common Aggregation Stages
 
-### $match Stage
-Filters documents (similar to find operation)
+#### $match Stage
 ```javascript
 {
     $match: {
@@ -362,8 +182,7 @@ Filters documents (similar to find operation)
 }
 ```
 
-### $project Stage
-Reshapes documents and includes/excludes fields
+#### $project Stage
 ```javascript
 {
     $project: {
@@ -374,44 +193,7 @@ Reshapes documents and includes/excludes fields
 }
 ```
 
-### $sort Stage
-Sorts documents
-```javascript
-{
-    $sort: {
-        age: -1,    // descending
-        name: 1     // ascending
-    }
-}
-```
-
-### $limit and $skip Stages
-Pagination and document limiting
-```javascript
-{
-    $skip: 10   // Skip first 10 documents
-},
-{
-    $limit: 5   // Return only 5 documents
-}
-```
-
-### $lookup Stage
-Performs left outer join with another collection
-```javascript
-{
-    $lookup: {
-        from: "orders",
-        localField: "userId",
-        foreignField: "_id",
-        as: "userOrders"
-    }
-}
-```
-
-## Group Operations
-
-### Basic Grouping
+#### $group Stage
 ```javascript
 {
     $group: {
@@ -423,48 +205,21 @@ Performs left outer join with another collection
 }
 ```
 
-### Complex Grouping
+#### $lookup Stage
 ```javascript
 {
-    $group: {
-        _id: {
-            year: { $year: "$date" },
-            month: { $month: "$date" }
-        },
-        totalSales: { $sum: "$amount" },
-        avgOrderValue: { $avg: "$amount" },
-        uniqueCustomers: { $addToSet: "$customerId" },
-        maxOrder: { $max: "$amount" },
-        minOrder: { $min: "$amount" }
+    $lookup: {
+        from: "orders",
+        localField: "userId",
+        foreignField: "_id",
+        as: "userOrders"
     }
 }
 ```
 
-### Accumulator Operators
-```javascript
-{
-    $group: {
-        _id: "$category",
-        // Sum
-        total: { $sum: "$amount" },
-        // Average
-        average: { $avg: "$price" },
-        // First value
-        firstItem: { $first: "$name" },
-        // Last value
-        lastItem: { $last: "$name" },
-        // Unique values
-        uniqueValues: { $addToSet: "$tag" },
-        // Push all values
-        allValues: { $push: "$value" }
-    }
-}
-```
+### Array Operations
 
-## Array Operations
-
-### $unwind Stage
-Deconstructs array fields
+#### $unwind Stage
 ```javascript
 {
     $unwind: {
@@ -474,11 +229,10 @@ Deconstructs array fields
 }
 ```
 
-### Array Manipulation
+#### Array Manipulation
 ```javascript
 {
     $project: {
-        // Filter array
         activeTags: {
             $filter: {
                 input: "$tags",
@@ -486,27 +240,23 @@ Deconstructs array fields
                 cond: { $eq: ["$$tag.status", "active"] }
             }
         },
-        // Map array
         upperTags: {
             $map: {
                 input: "$tags",
                 as: "tag",
                 in: { $toUpper: "$$tag" }
             }
-        },
-        // Array size
-        tagCount: { $size: "$tags" }
+        }
     }
 }
 ```
 
-## Conditional Operations
+### Conditional Operations
 
-### $switch
+#### $switch
 ```javascript
 {
     $project: {
-        category: 1,
         priceRange: {
             $switch: {
                 branches: [
@@ -521,7 +271,7 @@ Deconstructs array fields
 }
 ```
 
-### $cond
+#### $cond
 ```javascript
 {
     $project: {
@@ -536,51 +286,84 @@ Deconstructs array fields
 }
 ```
 
-## Window Operations
+## Indexing
 
-### Moving Average
+### Basic Indexes
 ```javascript
-{
-    $setWindowFields: {
-        partitionBy: "$category",
-        sortBy: { date: 1 },
-        output: {
-            movingAvg: {
-                $avg: "$amount",
-                window: {
-                    range: [-2, 0],
-                    unit: "day"
-                }
-            }
-        }
-    }
-}
+// Create single field index
+db.collection.createIndex({ name: 1 });
+
+// Create compound index
+db.collection.createIndex({ name: 1, age: -1 });
+
+// Create unique index
+db.collection.createIndex({ email: 1 }, { unique: true });
+
+// List indexes
+db.collection.getIndexes();
+
+// Drop index
+db.collection.dropIndex("index_name");
 ```
 
-### Running Total
+### Special Indexes
 ```javascript
-{
-    $setWindowFields: {
-        partitionBy: "$userId",
-        sortBy: { date: 1 },
-        output: {
-            runningTotal: {
-                $sum: "$amount",
-                window: {
-                    documents: ["unbounded", "current"]
-                }
-            }
-        }
-    }
-}
+// Text index
+db.collection.createIndex({ description: "text" });
+
+// Geospatial index
+db.collection.createIndex({ location: "2dsphere" });
 ```
 
-## Complex Examples
+## Performance Optimization
 
-### Sales Analysis Pipeline
+### Query Optimization
+1. Use appropriate indexes
+2. Limit returned fields using projection
+3. Use `.limit()` to restrict result size
+4. Place `$match` stages early in aggregation pipelines
+5. Monitor query performance using `.explain()`
+
+### Memory Management
+```javascript
+// For large aggregations
+db.collection.aggregate([
+    // pipeline stages
+], {
+    allowDiskUse: true,
+    maxTimeMS: 60000
+});
+```
+
+## Advanced Features
+
+### Text Search
+```javascript
+db.collection.find({
+    $text: {
+        $search: "mongodb database"
+    }
+});
+```
+
+### Geospatial Queries
+```javascript
+db.collection.find({
+    location: {
+        $near: {
+            $geometry: {
+                type: "Point",
+                coordinates: [-73.9667, 40.78]
+            },
+            $maxDistance: 5000
+        }
+    }
+});
+```
+
+### Complex Aggregation Example
 ```javascript
 db.orders.aggregate([
-    // Match relevant documents
     {
         $match: {
             date: {
@@ -589,7 +372,6 @@ db.orders.aggregate([
             }
         }
     },
-    // Lookup customer information
     {
         $lookup: {
             from: "customers",
@@ -598,34 +380,17 @@ db.orders.aggregate([
             as: "customerInfo"
         }
     },
-    // Unwind customer array
     {
         $unwind: "$customerInfo"
     },
-    // Group by customer category
     {
         $group: {
             _id: "$customerInfo.category",
             totalSales: { $sum: "$amount" },
             averageOrder: { $avg: "$amount" },
-            orderCount: { $sum: 1 },
-            uniqueCustomers: { $addToSet: "$customerId" }
+            orderCount: { $sum: 1 }
         }
     },
-    // Add calculated fields
-    {
-        $project: {
-            category: "$_id",
-            totalSales: 1,
-            averageOrder: 1,
-            orderCount: 1,
-            customerCount: { $size: "$uniqueCustomers" },
-            averageCustomerValue: {
-                $divide: ["$totalSales", { $size: "$uniqueCustomers" }]
-            }
-        }
-    },
-    // Sort by total sales
     {
         $sort: {
             totalSales: -1
@@ -634,123 +399,38 @@ db.orders.aggregate([
 ]);
 ```
 
-### Customer Segmentation Pipeline
-```javascript
-db.customers.aggregate([
-    // Calculate customer metrics
-    {
-        $lookup: {
-            from: "orders",
-            localField: "_id",
-            foreignField: "customerId",
-            as: "orders"
-        }
-    },
-    {
-        $project: {
-            name: 1,
-            totalSpent: { $sum: "$orders.amount" },
-            orderCount: { $size: "$orders" },
-            averageOrder: { $avg: "$orders.amount" },
-            lastOrder: { $max: "$orders.date" }
-        }
-    },
-    // Add customer segments
-    {
-        $addFields: {
-            segment: {
-                $switch: {
-                    branches: [
-                        { case: { $gt: ["$totalSpent", 10000] }, then: "VIP" },
-                        { case: { $gt: ["$totalSpent", 5000] }, then: "Premium" },
-                        { case: { $gt: ["$totalSpent", 1000] }, then: "Regular" }
-                    ],
-                    default: "New"
-                }
-            }
-        }
-    }
-]);
-```
-
 ## Best Practices
 
-1. **Pipeline Optimization**
-   - Place `$match` and `$limit` stages early in the pipeline
-   - Use indexes to support your `$match` and `$sort` operations
-   - Avoid unnecessary stages and transformations
+1. **Query Optimization**
+   - Use appropriate indexes
+   - Minimize the number of documents scanned
+   - Use projection to limit returned fields
+   - Use limit() for pagination
 
-2. **Memory Considerations**
-   - Be cautious with `$group` and `$sort` stages as they can consume significant memory
-   - Use `allowDiskUse: true` for large datasets
-   - Break down complex pipelines into smaller steps
+2. **Data Modeling**
+   - Design schemas based on application queries
+   - Consider embedding vs referencing
+   - Keep document size under 16MB
+   - Use appropriate data types
 
-3. **Performance Tips**
-   - Index fields used in `$match`, `$sort`, and `$lookup` stages
-   - Use `$project` to reduce document size early in the pipeline
-   - Avoid unnecessary `$unwind` operations on large arrays
+3. **Aggregation Pipeline**
+   - Place `$match` and `$limit` stages early
+   - Use indexes to support stages
+   - Break complex pipelines into smaller steps
+   - Monitor memory usage
 
-## Performance Optimization
-
-### Using Indexes
+4. **Error Handling**
 ```javascript
-// Create indexes for frequently used fields
-db.collection.createIndex({ "date": 1 });
-db.collection.createIndex({ "customerId": 1 });
-```
-
-### Explain Plan
-```javascript
-db.collection.aggregate([
-    // Your pipeline stages
-], {
-    explain: true
-});
-```
-
-### Memory Management
-```javascript
-db.collection.aggregate([
-    // Your pipeline stages
-], {
-    allowDiskUse: true,
-    maxTimeMS: 60000
-});
-```
-
-## Common Aggregation Patterns
-
-### Date Grouping
-```javascript
-{
-    $group: {
-        _id: {
-            year: { $year: "$date" },
-            month: { $month: "$date" },
-            day: { $dayOfMonth: "$date" }
-        },
-        count: { $sum: 1 }
-    }
+try {
+    await db.collection.insertOne({ name: "John Doe" });
+} catch (error) {
+    console.error("Error inserting document:", error);
 }
 ```
 
-### Faceted Search
-```javascript
-{
-    $facet: {
-        categoryCounts: [
-            { $group: { _id: "$category", count: { $sum: 1 } } }
-        ],
-        priceRanges: [
-            {
-                $bucket: {
-                    groupBy: "$price",
-                    boundaries: [0, 50, 100, 200, 500],
-                    default: "500+",
-                    output: { count: { $sum: 1 } }
-                }
-            }
-        ]
-    }
-}
-```
+## Additional Resources
+
+- [MongoDB Official Documentation](https://docs.mongodb.com/)
+- [MongoDB Query Operators](https://docs.mongodb.com/manual/reference/operator/)
+- [MongoDB Aggregation Pipeline](https://docs.mongodb.com/manual/core/aggregation-pipeline/)
+- [MongoDB Index Types](https://docs.mongodb.com/manual/indexes/)
