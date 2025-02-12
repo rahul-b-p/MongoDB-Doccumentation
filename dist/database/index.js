@@ -17,9 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Aggregation = exports.Queries = void 0;
+exports.appQueries = void 0;
 __exportStar(require("./connection"), exports);
 var queries_1 = require("./queries");
-Object.defineProperty(exports, "Queries", { enumerable: true, get: function () { return __importDefault(queries_1).default; } });
-var aggregation_1 = require("./aggregation");
-Object.defineProperty(exports, "Aggregation", { enumerable: true, get: function () { return __importDefault(aggregation_1).default; } });
+Object.defineProperty(exports, "appQueries", { enumerable: true, get: function () { return __importDefault(queries_1).default; } });
