@@ -3,13 +3,468 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MongoDB Queries</title>
+    <title>MongoDB Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: "Courier New", Courier, monospace;
+            background: #f4f4f4;
+            padding: 0 2px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #333;
+            color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
 </head>
 
 <body>
-    
+    <div class="container">
+        <h1>MongoDB Documentation</h1>
+        <p>A comprehensive guide to MongoDB operations, including queries, aggregations, best practices, and examples.
+        </p>
 
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#basic-operations">Basic Operations</a></li>
+            <li><a href="#query-operations">Query Operations</a></li>
+            <li><a href="#update-operations">Update Operations</a></li>
+            <li><a href="#aggregation-framework">Aggregation Framework</a></li>
+            <li><a href="#indexing">Indexing</a></li>
+            <li><a href="#performance-optimization">Performance Optimization</a></li>
+            <li><a href="#advanced-features">Advanced Features</a></li>
+            <li><a href="#best-practices">Best Practices</a></li>
+        </ul>
+
+        <h2 id="basic-operations">Basic Operations</h2>
+
+        <h3>Insert Documents</h3>
+        <pre><code>// Insert a single document
+db.collection.insertOne({
+    name: "John Doe",
+    age: 30,
+    email: "john@example.com"
+});
+
+// Insert multiple documents
+db.collection.insertMany([
+    { name: "Jane Doe", age: 25 },
+    { name: "Bob Smith", age: 35 }
+]);</code></pre>
+
+        <h3>Find Documents</h3>
+        <pre><code>// Find all documents
+db.collection.find({});
+
+// Find with specific criteria
+db.collection.find({ age: { $gt: 25 } });
+
+// Find one document
+db.collection.findOne({ name: "John Doe" });
+
+// Project specific fields
+db.collection.find({}, { name: 1, email: 1, _id: 0 });</code></pre>
+
+        <h2 id="query-operations">Query Operations</h2>
+
+        <h3>Comparison Operators</h3>
+        <pre><code>// Greater than
+db.collection.find({ age: { $gt: 25 } });
+
+// Less than
+db.collection.find({ age: { $lt: 30 } });
+
+// Greater than or equal to
+db.collection.find({ age: { $gte: 25 } });
+
+// Less than or equal to
+db.collection.find({ age: { $lte: 30 } });
+
+// Not equal to
+db.collection.find({ age: { $ne: 30 } });
+
+// In array
+db.collection.find({ age: { $in: [25, 30, 35] } });
+
+// Not in array
+db.collection.find({ age: { $nin: [25, 30, 35] } });</code></pre>
+
+        <h3>Logical Operators</h3>
+        <pre><code>// AND
+db.collection.find({
+    $and: [
+        { age: { $gt: 25 } },
+        { name: "John Doe" }
+    ]
+});
+
+// OR
+db.collection.find({
+    $or: [
+        { age: { $lt: 25 } },
+        { age: { $gt: 50 } }
+    ]
+});
+
+// NOT
+db.collection.find({
+    age: { $not: { $gt: 25 } }
+});
+
+// NOR
+db.collection.find({
+    $nor: [
+        { age: { $lt: 25 } },
+        { name: "John Doe" }
+    ]
+});</code></pre>
+
+        <h2 id="update-operations">Update Operations</h2>
+
+        <h3>Update Documents</h3>
+        <pre><code>// Update one document
+db.collection.updateOne(
+    { name: "John Doe" },
+    { $set: { age: 31 } }
+);
+
+// Update multiple documents
+db.collection.updateMany(
+    { age: { $lt: 25 } },
+    { $set: { status: "young" } }
+);
+
+// Replace one document
+db.collection.replaceOne(
+    { name: "John Doe" },
+    { name: "John Smith", age: 31 }
+);</code></pre>
+
+        <h3>Update Operators</h3>
+        <pre><code>// Increment value
+db.collection.updateOne(
+    { name: "John Doe" },
+    { $inc: { age: 1 } }
+);
+
+// Set value
+db.collection.updateOne(
+    { name: "John Doe" },
+    { $set: { email: "john.doe@example.com" } }
+);
+
+// Unset field
+db.collection.updateOne(
+    { name: "John Doe" },
+    { $unset: { temporary_field: "" } }
+);
+
+// Array operations
+db.collection.updateOne(
+    { name: "John Doe" },
+    { $push: { hobbies: "reading" } }
+);
+
+db.collection.updateOne(
+    { name: "John Doe" },
+    { $pull: { hobbies: "reading" } }
+);</code></pre>
+
+        <h2 id="aggregation-framework">Aggregation Framework</h2>
+
+        <h3>Basic Syntax</h3>
+        <pre><code>db.collection.aggregate([
+    { stage1 },
+    { stage2 },
+    { stage3 }
+    // ... more stages
+]);</code></pre>
+
+        <h3>Common Aggregation Stages</h3>
+
+        <h4>$match Stage</h4>
+        <pre><code>{
+    $match: {
+        age: { $gt: 25 },
+        status: "active"
+    }
+}</code></pre>
+
+        <h4>$project Stage</h4>
+        <pre><code>{
+    $project: {
+        fullName: { $concat: ["$firstName", " ", "$lastName"] },
+        age: 1,
+        _id: 0
+    }
+}</code></pre>
+
+        <h4>$group Stage</h4>
+        <pre><code>{
+    $group: {
+        _id: "$category",
+        totalAmount: { $sum: "$amount" },
+        avgAmount: { $avg: "$amount" },
+        count: { $sum: 1 }
+    }
+}</code></pre>
+
+        <h4>$lookup Stage</h4>
+        <pre><code>{
+    $lookup: {
+        from: "orders",
+        localField: "userId",
+        foreignField: "_id",
+        as: "userOrders"
+    }
+}</code></pre>
+
+        <h3>Array Operations</h3>
+
+        <h4>$unwind Stage</h4>
+        <pre><code>{
+    $unwind: {
+        path: "$tags",
+        preserveNullAndEmptyArrays: true
+    }
+}</code></pre>
+
+        <h4>Array Manipulation</h4>
+        <pre><code>{
+    $project: {
+        activeTags: {
+            $filter: {
+                input: "$tags",
+                as: "tag",
+                cond: { $eq: ["$$tag.status", "active"] }
+            }
+        },
+        upperTags: {
+            $map: {
+                input: "$tags",
+                as: "tag",
+                in: { $toUpper: "$$tag" }
+            }
+        }
+    }
+}</code></pre>
+
+        <h3>Conditional Operations</h3>
+
+        <h4>$switch</h4>
+        <pre><code>{
+    $project: {
+        priceRange: {
+            $switch: {
+                branches: [
+                    { case: { $lt: ["$price", 50] }, then: "budget" },
+                    { case: { $lt: ["$price", 100] }, then: "regular" },
+                    { case: { $gte: ["$price", 100] }, then: "premium" }
+                ],
+                default: "unknown"
+            }
+        }
+    }
+}</code></pre>
+
+        <h4>$cond</h4>
+        <pre><code>{
+    $project: {
+        status: {
+            $cond: {
+                if: { $gte: ["$age", 18] },
+                then: "adult",
+                else: "minor"
+            }
+        }
+    }
+}</code></pre>
+
+        <h2 id="indexing">Indexing</h2>
+
+        <h3>Basic Indexes</h3>
+        <pre><code>// Create single field index
+db.collection.createIndex({ name: 1 });
+
+// Create compound index
+db.collection.createIndex({ name: 1, age: -1 });
+
+// Create unique index
+db.collection.createIndex({ email: 1 }, { unique: true });
+
+// List indexes
+db.collection.getIndexes();
+
+// Drop index
+db.collection.dropIndex("index_name");</code></pre>
+
+        <h3>Special Indexes</h3>
+        <pre><code>// Text index
+db.collection.createIndex({ description: "text" });
+
+// Geospatial index
+db.collection.createIndex({ location: "2dsphere" });</code></pre>
+
+        <h2 id="performance-optimization">Performance Optimization</h2>
+
+        <h3>Query Optimization</h3>
+        <ul>
+            <li>Use appropriate indexes</li>
+            <li>Limit returned fields using projection</li>
+            <li>Use <code>.limit()</code> to restrict result size</li>
+            <li>Place <code>$match</code> stages early in aggregation pipelines</li>
+            <li>Monitor query performance using <code>.explain()</code></li>
+        </ul>
+
+        <h3>Memory Management</h3>
+        <pre><code>// For large aggregations
+db.collection.aggregate([
+    // pipeline stages
+], {
+    allowDiskUse: true,
+    maxTimeMS: 60000
+});</code></pre>
+
+        <h2 id="advanced-features">Advanced Features</h2>
+
+        <h3>Text Search</h3>
+        <pre><code>db.collection.find({
+    $text: {
+        $search: "mongodb database"
+    }
+});</code></pre>
+
+        <h3>Geospatial Queries</h3>
+        <pre><code>db.collection.find({
+    location: {
+        $near: {
+            $geometry: {
+                type: "Point",
+                coordinates: [-73.9667, 40.78]
+            },
+            $maxDistance: 5000
+        }
+    }
+});</code></pre>
+
+        <h3>Complex Aggregation Example</h3>
+        <pre><code>db.orders.aggregate([
+    {
+        $match: {
+            date: {
+                $gte: ISODate("2024-01-01"),
+                $lt: ISODate("2025-01-01")
+            }
+        }
+    },
+    {
+        $lookup: {
+            from: "customers",
+            localField: "customerId",
+            foreignField: "_id",
+            as: "customerInfo"
+        }
+    },
+    {
+        $unwind: "$customerInfo"
+    },
+    {
+        $group: {
+            _id: "$customerInfo.category",
+            totalSales: { $sum: "$amount" },
+            averageOrder: { $avg: "$amount" },
+            orderCount: { $sum: 1 }
+        }
+    },
+    {
+        $sort: {
+            totalSales: -1
+        }
+    }
+]);</code></pre>
+
+        <h2 id="best-practices">Best Practices</h2>
+
+        <h3>Query Optimization</h3>
+        <ul>
+            <li>Use appropriate indexes</li>
+            <li>Minimize the number of documents scanned</li>
+            <li>Use projection to limit returned fields</li>
+            <li>Use <code>limit()</code> for pagination</li>
+        </ul>
+
+        <h3>Data Modeling</h3>
+        <ul>
+            <li>Design schemas based on application queries</li>
+            <li>Consider embedding vs referencing</li>
+            <li>Keep document size under 16MB</li>
+            <li>Use appropriate data types</li>
+        </ul>
+
+        <h3>Aggregation Pipeline</h3>
+        <ul>
+            <li>Place <code>$match</code> and <code>$limit</code> stages early</li>
+            <li>Use indexes to support stages</li>
+            <li>Break complex pipelines into smaller steps</li>
+            <li>Monitor memory usage</li>
+        </ul>
+
+        <h3>Error Handling</h3>
+        <pre><code>try {
+    await db.collection.insertOne({ name: "John Doe" });
+} catch (error) {
+    console.error("Error inserting document:", error);
+}</code></pre>
+
+        <h2>Additional Resources</h2>
+        <ul>
+            <li><a href="https://docs.mongodb.com/">MongoDB Official Documentation</a></li>
+            <li><a href="https://docs.mongodb.com/manual/reference/operator/">MongoDB Query Operators</a></li>
+            <li><a href="https://docs.mongodb.com/manual/core/aggregation-pipeline/">MongoDB Aggregation Pipeline</a>
+            </li>
+            <li><a href="https://docs.mongodb.com/manual/indexes/">MongoDB Index Types</a></li>
+        </ul>
+    </div>
 </body>
 
 </html>
