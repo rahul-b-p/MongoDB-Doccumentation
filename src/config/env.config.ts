@@ -8,4 +8,4 @@ if (!MONGODB_URI) {
     throw new Error(ERROR.MONGODB_URI_REQUIRED);
 }
 
-export default MONGODB_URI as string; 
+export default MONGODB_URI as string;
